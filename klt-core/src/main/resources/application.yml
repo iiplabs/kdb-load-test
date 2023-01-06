@@ -1,0 +1,35 @@
+debug: false
+
+server:
+  error:
+    whitelabel:
+      enabled: false
+  max-http-header-size: 8KB
+  port: ${KLT_CORE_SERVER_PORT}
+
+spring:
+  cache:
+    cache-names: meta,subscriptions
+
+  datasource:
+    url: ${KLT_CORE_DB_URL}
+    username: ${KLT_CORE_SQL_USER}
+    password: ${KLT_CORE_SQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        generate_statistics: false
+        jdbc:
+          batch_size: 100001
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+
+logging:
+  level:
+    root: INFO

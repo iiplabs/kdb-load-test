@@ -1,0 +1,27 @@
+use klt;
+
+commit;
+
+CREATE TABLE MSISDN_SUBSCRIPTION_META (
+  id bigint unsigned NOT NULL AUTO_INCREMENT,
+  meta varchar(30),
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+commit;
+
+CREATE TABLE MSISDN_SUBSCRIPTION (
+  id bigint unsigned NOT NULL AUTO_INCREMENT,
+  msisdn numeric(20) NOT NULL,
+  meta_id bigint unsigned,
+  PRIMARY KEY (id),
+  CONSTRAINT FK_META FOREIGN KEY (meta_id) REFERENCES MSISDN_SUBSCRIPTION_META(id)
+) ENGINE=InnoDB 
+  DEFAULT CHARSET=utf8mb4;
+
+commit;
+
+CREATE INDEX MSISDN_SUBSCRIPTION_meta_id ON MSISDN_SUBSCRIPTION(meta_id);
+CREATE INDEX MSISDN_SUBSCRIPTION_msisdn ON MSISDN_SUBSCRIPTION(msisdn);
+
+commit;

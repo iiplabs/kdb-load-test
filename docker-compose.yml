@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  mysql:
+    container_name: klt-db
+    image: mysql/mysql-server:8.0.31
+    command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
+    restart: unless-stopped
+    volumes:
+      - klt-data:/var/lib/mysql
+      - ./docker/db/scripts/backend:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${KLT_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${KLT_CORE_SQL_DATABASE}
+      MYSQL_USER: ${KLT_CORE_SQL_USER}
+      MYSQL_PASSWORD: ${KLT_CORE_SQL_PASSWORD}
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '${KLT_MYSQL_PORT}:3306'
+
+  klt-core:
+    build:
+      context: ./klt-core/
+    image: klt-core:latest
+    container_name: klt-core
+    restart: unless-stopped
+    ports:
+      - '${KLT_CORE_SERVER_PORT}:${KLT_CORE_SERVER_PORT}'
+    environment: 
+      KLT_CORE_SERVER_PORT: ${KLT_CORE_SERVER_PORT}
+      KLT_CORE_DB_URL: ${KLT_CORE_DB_URL}
+      KLT_CORE_SQL_USER: ${KLT_CORE_SQL_USER}
+      KLT_CORE_SQL_PASSWORD: ${KLT_CORE_SQL_PASSWORD}
+      KLT_GENERATE_MSISDN_RECORDS: ${KLT_GENERATE_MSISDN_RECORDS}
+    depends_on:
+      - mysql
+
+volumes:
+  klt-data:
